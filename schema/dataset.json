@@ -1,0 +1,517 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "https://github.com/dsbrennan/pear/schema/dataset.json",
+    "type": "object",
+    "title": "PEAR Schema: Dataset object",
+    "description": "The JSON schema to control a Dataset object within the PEAR dataset",
+    "definitions": {
+        "reference": {
+            "type": "string",
+            "minLength": 5
+        },
+        "date": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 10
+        },
+        "file": {
+            "type": "object",
+            "title": "File object",
+            "description": "Standard file object",
+            "required": [
+                "date",
+                "url",
+                "md5"
+            ],
+            "properties": {
+                "date": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/date"
+                        },
+                        {
+                            "title": "File date",
+                            "description": "The date the file was linked into the parent object"
+                        }
+                    ]
+                },
+                "description": {
+                    "type": "string",
+                    "title": "File description",
+                    "description": "More information to describe the file contents"
+                },
+                "url": {
+                    "type": "string",
+                    "title": "File location",
+                    "description": "The URL to access the file on",
+                    "minLength": 1
+                },
+                "md5": {
+                    "type": "string",
+                    "title": "File checksum",
+                    "description": "The MD5 sum of the file for checking file integrity after download",
+                    "minLength": 32,
+                    "maxLength": 32
+                }
+            },
+            "additionalProperties": false
+        },
+        "standardFile": {
+            "type": "object",
+            "title": "File object",
+            "description": "Standard file object",
+            "required": [
+                "name",
+                "files"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "title": "Name",
+                    "description": "Display name of the file",
+                    "minLength": 1
+                },
+                "files": {
+                    "type": "array",
+                    "title": "File list",
+                    "description": "An array of standard files",
+                    "items": {
+                        "$ref": "#/definitions/file"
+                    },
+                    "minItems": 1
+                }
+            },
+            "additionalProperties": false
+        },
+        "schemaFile": {
+            "type": "object",
+            "title": "Schema file object",
+            "description": "PBSHM Schema compliant file object",
+            "required": [
+                "name",
+                "files"
+            ],
+            "properties": {
+                "name": {
+                    "$ref": "#/definitions/standardFile/properties/name"
+                },
+                "files": {
+                    "type": "array",
+                    "title": "Schema file list",
+                    "description": "An array of schema files",
+                    "items": {
+                        "type": "object",
+                        "title": "Schema file object",
+                        "description": "A file which is PBSHM Schema compliant",
+                        "required": [
+                            "date",
+                            "schema",
+                            "url",
+                            "md5"
+                        ],
+                        "properties": {
+                            "date": {
+                                "$ref": "#/definitions/file/properties/date"
+                            },
+                            "schema": {
+                                "type": "string",
+                                "title": "Schema version",
+                                "description": "The version number of the PBSHM Schema that the file is compliant against",
+                                "enum": [
+                                    "1.0",
+                                    "1.0.1",
+                                    "1.1.0",
+                                    "1.1.1",
+                                    "1.2.1"
+                                ]
+                            },
+                            "description": {
+                                "$ref": "#/definitions/file/properties/description"
+                            },
+                            "url": {
+                                "$ref": "#/definitions/file/properties/url"
+                            },
+                            "md5": {
+                                "$ref": "#/definitions/file/properties/md5"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "minItems": 1
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "required": [
+        "name",
+        "authors",
+        "dates",
+        "commands"
+    ],
+    "properties": {
+        "name": {
+            "type": "object",
+            "title": "Name of the Dataset Object",
+            "description": "The identification labels of the dataset object within the PEAR dataset",
+            "required": [
+                "reference",
+                "label"
+            ],
+            "properties": {
+                "reference": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/reference"
+                        },
+                        {
+                            "title": "Numeric reference",
+                            "description": "This is the concatenated value of the dataset category number, the dataset subtype number, plus the incremental number of this dataset within the subtype i.e 1.1.1",
+                            "maxLength": 5
+                        }
+                    ]
+                },
+                "label": {
+                    "type": "string",
+                    "title": "Test reference",
+                    "description": "This is a combination of the last names of the authors (First author with et al if three authors or more), the year, the the letter of the alphabet if multiple datasets by the same authors in the same year, the dataset subtype and finally the dataset category i.e O'Higgins & Brennan 2024a: dataset-subtype-dataset-category",
+                    "minLength": 11
+                }
+            },
+            "additionalProperties": false
+        },
+        "description": {
+            "type": "string",
+            "title": "Description of the Dataset Object",
+            "description": "The description of the dataset object within the PEAR dataset"
+        },
+        "authors": {
+            "type": "array",
+            "title": "List of authors",
+            "description": "The list of authors of the dataset in standard scientific paper order",
+            "items": {
+                "type": "object",
+                "title": "Author object",
+                "description": "Details on the author of a PEAR object",
+                "required": [
+                    "first_names",
+                    "last_name"
+                ],
+                "properties": {
+                    "first_names": {
+                        "type": "string",
+                        "title": "Author first names",
+                        "description": "First author names as would appear on a scientific paper i.e Daniel S.",
+                        "minLength": 1
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "title": "Author last name",
+                        "description": "The last name of an author i.e Brennan",
+                        "minLength": 1
+                    },
+                    "institution": {
+                        "type": "string",
+                        "title": "Name of the institution",
+                        "description": "The name of the institution associated with the Author i.e University of Sheffield",
+                        "minLength": 1
+                    },
+                    "email": {
+                        "type": "string",
+                        "title": "Email address",
+                        "description": "Correspondant email address for the author",
+                        "minLength": 5
+                    },
+                    "orcid": {
+                        "type": "string",
+                        "title": "ORC ID",
+                        "description": "The ORCID of the author",
+                        "minLength": 19,
+                        "maxLength": 19
+                    }
+                },
+                "additionalProperties": false
+            },
+            "minItems": 1
+        },
+        "dates": {
+            "type": "object",
+            "title": "Dataset date markers",
+            "description": "The date markers for key timepoints in the lifespan of the dataset",
+            "required": [
+                "published",
+                "modified"
+            ],
+            "properties": {
+                "published": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/date"
+                        },
+                        {
+                            "title": "Published date",
+                            "description": "The date the dataset was first published in PEAR"
+                        }
+                    ]
+                },
+                "modified": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/date"
+                        },
+                        {
+                            "title": "Modified date",
+                            "description": "The date the dataset was last modified on"
+                        }
+                    ]
+                },
+                "expired": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/date"
+                        },
+                        {
+                            "title": "Published date",
+                            "description": "The date the dataset was removed as being an activate dataset within PEAR"
+                        }
+                    ]
+                }
+            },
+            "additionalProperties": false
+        },
+        "lineage": {
+            "type": "object",
+            "title": "Lineage links",
+            "description": "A link to the dataset which this dataset supersedes and link to the dataset which supersedes this dataset",
+            "properties": {
+                "supersedes": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/reference"
+                        },
+                        {
+                            "title": "Superseded dataset",
+                            "description": "The numberical reference of the dataset supersedes by this dataset"
+                        }
+                    ]
+                },
+                "precedes": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/reference"
+                        },
+                        {
+                            "title": "Preceded dataset",
+                            "description": "The numberical reference of the dataset precedes this dataset"
+                        }
+                    ]
+                }
+            },
+            "minProperties": 1,
+            "additionalProperties": false
+        },
+        "commands": {
+            "type": "array",
+            "title": "List of available commands",
+            "description": "A list of the available commands and associated arguments to generate the dataset",
+            "items": {
+                "type": "object",
+                "title": "Command object",
+                "description": "Details of an available command and associated arguments",
+                "required": [
+                    "label",
+                    "command"
+                ],
+                "properties": {
+                    "label": {
+                        "type": "string",
+                        "title": "Label of the command",
+                        "description": "A text label of the command",
+                        "minLength": 1
+                    },
+                    "command": {
+                        "type": "string",
+                        "title": "Command",
+                        "description": "Text to run the command",
+                        "minLength": 4
+                    },
+                    "arguments": {
+                        "type": "array",
+                        "title": "A list of available arguments",
+                        "description": "The arguments available for the selected command",
+                        "items": {
+                            "type": "object",
+                            "title": "Argument object",
+                            "description": "Details of the arguments for the given command",
+                            "required": [
+                                "name",
+                                "description"
+                            ],
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "title": "Argument name",
+                                    "description": "Name of the argument as is passed into the command",
+                                    "minLength": 1
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "title": "Description of argument",
+                                    "description": "Description of the purpose of the argument",
+                                    "minLength": 1
+                                }
+                            },
+                            "additionalProperties": false
+                        },
+                        "minItems": 1
+                    },
+                    "parameters": {
+                        "type": "array",
+                        "title": "A list of system parameters",
+                        "description": "A description of the system parameters that are randomised for each generated structure",
+                        "items": {
+                            "type": "object",
+                            "title": "Parameter object",
+                            "description": "Details of the internal system parameters which are randomised to create each structure",
+                            "required": [
+                                "name",
+                                "description",
+                                "explanation",
+                                "selection"
+                            ],
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "title": "Name",
+                                    "description": "Name of the parameter",
+                                    "minLength": 1
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "title": "Description",
+                                    "description": "Description of the parameter",
+                                    "minLength": 1
+                                },
+                                "explanation": {
+                                    "type": "string",
+                                    "title": "Explanation of the purpose of the parameter",
+                                    "description": "The description of the purpose of the parameter in the system",
+                                    "minLength": 1
+                                },
+                                "selection": {
+                                    "type": "string",
+                                    "title": "Details on the values selected",
+                                    "description": "Details on what and how values are selected for the generated structure",
+                                    "minLength": 1
+                                },
+                                "variables": {
+                                    "type": "array",
+                                    "title": "A list of variables",
+                                    "description": "A list of structural information variables effected by this parameter",
+                                    "items": {
+                                        "type": "object",
+                                        "title": "Variables object",
+                                        "description": "A variable within the structural information model which is effected by a parameter",
+                                        "required": [
+                                            "group",
+                                            "item"
+                                        ],
+                                        "properties": {
+                                            "group": {
+                                                "type": "string",
+                                                "title": "Variable group",
+                                                "description": "The name of the group of the variable",
+                                                "minLength": 1
+                                            },
+                                            "item": {
+                                                "type": "string",
+                                                "title": "Variable item",
+                                                "description": "The name of the item of the variable"
+                                            }
+                                        },
+                                        "additionalProperties": false
+                                    },
+                                    "minItems": 1
+                                }
+                            },
+                            "additionalProperties": false
+                        },
+                        "minItems": 1
+                    }
+                },
+                "additionalProperties": false
+            },
+            "minItems": 1
+        },
+        "executed": {
+            "type": "array",
+            "title": "Commands executed",
+            "description": "A list of commands executed to generated the dataset as defined by the outputs in the source section",
+            "items": {
+                "type": "object",
+                "title": "Executed command object",
+                "description": "Details of the command executed",
+                "required": [
+                    "command",
+                    "description"
+                ],
+                "properties": {
+                    "command": {
+                        "type": "string",
+                        "title": "Text ran for command",
+                        "description": "The text executed on a system to run the command (includes selected arguments)",
+                        "minLength": 1
+                    },
+                    "seed": {
+                        "type": "number",
+                        "title": "Seed",
+                        "description": "The seed used in any randomised portion of the command",
+                        "minLength": 1
+                    },
+                    "description": {
+                        "type": "string",
+                        "title": "Description of the executed command",
+                        "description": "Details on what the command created",
+                        "minLength": 1
+                    }
+                },
+                "additionalProperties": false
+            },
+            "minItems": 1
+        },
+        "sources": {
+            "type": "object",
+            "title": "Source object",
+            "description": "The defined sources of the dataset",
+            "required": [
+                "readme",
+                "si",
+                "ie"
+            ],
+            "properties": {
+                "readme": {
+                    "$ref": "#/definitions/standardFile"
+                },
+                "si": {
+                    "$ref": "#/definitions/standardFile"
+                },
+                "ie": {
+                    "$ref": "#/definitions/schemaFile"
+                },
+                "report": {
+                    "$ref": "#/definitions/standardFile"
+                },
+                "other": {
+                    "type": "array",
+                    "title": "Other files list",
+                    "description": "A list of all other associated files with the dataset",
+                    "items": {
+                        "$ref": "#/definitions/standardFile"
+                    },
+                    "minItems": 1
+                }
+            },
+            "additionalProperties": false
+        }
+    }
+}
