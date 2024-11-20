@@ -7,12 +7,11 @@
     "definitions": {
         "reference": {
             "type": "string",
-            "minLength": 5
+            "pattern": "^[1-9][0-9]*\\.[1-9][0-9]*\\.[1-9][0-9]*$"
         },
         "date": {
             "type": "string",
-            "minLength": 10,
-            "maxLength": 10
+            "pattern": "^([0-9]{4})-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$"
         },
         "file": {
             "type": "object",
@@ -166,8 +165,7 @@
                         },
                         {
                             "title": "Numeric reference",
-                            "description": "This is the concatenated value of the dataset category number, the dataset subtype number, plus the incremental number of this dataset within the subtype i.e 1.1.1",
-                            "maxLength": 5
+                            "description": "This is the concatenated value of the dataset category number, the dataset subtype number, plus the incremental number of this dataset within the subtype i.e 1.1.1"
                         }
                     ]
                 },
@@ -182,13 +180,13 @@
         },
         "description": {
             "type": "string",
-            "title": "Description of the Dataset Object",
-            "description": "The description of the dataset object within the PEAR dataset"
+            "title": "Description of the PEAR Object",
+            "description": "The description of the object included within the PEAR dataset"
         },
         "authors": {
             "type": "array",
             "title": "List of authors",
-            "description": "The list of authors of the dataset in standard scientific paper order",
+            "description": "The list of authors of the PEAR object in standard scientific paper order",
             "items": {
                 "type": "object",
                 "title": "Author object",
@@ -236,8 +234,8 @@
         },
         "dates": {
             "type": "object",
-            "title": "Dataset date markers",
-            "description": "The date markers for key timepoints in the lifespan of the dataset",
+            "title": "Object date markers",
+            "description": "The date markers for key timepoints in the lifespan of the PEAR object",
             "required": [
                 "published",
                 "modified"
@@ -250,7 +248,7 @@
                         },
                         {
                             "title": "Published date",
-                            "description": "The date the dataset was first published in PEAR"
+                            "description": "The date the object was first published in PEAR"
                         }
                     ]
                 },
@@ -261,7 +259,7 @@
                         },
                         {
                             "title": "Modified date",
-                            "description": "The date the dataset was last modified on"
+                            "description": "The date the object was last modified on"
                         }
                     ]
                 },
@@ -272,7 +270,7 @@
                         },
                         {
                             "title": "Published date",
-                            "description": "The date the dataset was removed as being an activate dataset within PEAR"
+                            "description": "The date the object was removed as being an activate object within PEAR"
                         }
                     ]
                 }
@@ -313,7 +311,7 @@
         "commands": {
             "type": "array",
             "title": "List of available commands",
-            "description": "A list of the available commands and associated arguments to generate the dataset",
+            "description": "A list of the available commands and associated arguments to generate the PEAR objects associated files listed in the source section",
             "items": {
                 "type": "object",
                 "title": "Command object",
@@ -446,7 +444,7 @@
         "executed": {
             "type": "array",
             "title": "Commands executed",
-            "description": "A list of commands executed to generated the dataset as defined by the outputs in the source section",
+            "description": "A list of commands executed to generated the associated PEAR objects file outputs",
             "items": {
                 "type": "object",
                 "title": "Executed command object",
