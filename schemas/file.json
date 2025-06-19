@@ -1,0 +1,65 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "https://dsbrennan.github.io/pear/schemas/file.json",
+    "type": "object",
+    "title": "PEAR Schema: File object",
+    "description": "The JSON schema to define an File within the PEAR repository",
+    "required": [
+        "date",
+        "url",
+        "sha256",
+        "type"
+    ],
+    "properties": {
+        "doi": {
+            "type": "string",
+            "title": "Digital Object Identifier",
+            "description": "The DOI of the file",
+            "minLength": 1
+        },
+        "date": {
+            "allOf": [
+                {
+                    "$ref": "https://dsbrennan.github.io/pear/schemas/entity.json#/definitions/date"
+                },
+                {
+                    "type": "string",
+                    "title": "Included date",
+                    "description": "The date the file was included into the associated entity",
+                    "minLength": 1
+                }
+            ]
+        },
+        "url": {
+            "type": "string",
+            "title": "Uniform Resource Locator",
+            "description": "The available URL to access the file",
+            "minLength": 1
+        },
+        "sha256": {
+            "type": "string",
+            "title": "SHA 256 checksum",
+            "description": "The SHA 256 checksum of the file for verification on download",
+            "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "type": {
+            "type": "string",
+            "title": "Type",
+            "description": "Type of data included in the file"
+        },
+        "schema": {
+            "type": "string",
+            "title": "Schema version",
+            "description": "Version of the PBSHM Schema the enclosed documents are compliant to",
+            "enum": [
+                "1.0",
+                "1.0.1",
+                "1.1.0",
+                "1.1.1",
+                "1.2.1",
+                "1.3.0"
+            ]
+        }
+    },
+    "additionalProperties": false
+}
