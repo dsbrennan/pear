@@ -1,0 +1,184 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "https://dsbrennan.github.io/pear/schemas/entity.json",
+    "type": "object",
+    "title": "PEAR Schema: Entity object",
+    "description": "The JSON schema to define an Entity within the PEAR repository",
+    "definitions": {
+        "date": {
+            "type": "string",
+            "pattern": "^([0-9]{4})-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$"
+        }
+    },
+    "required": [
+        "version",
+        "name",
+        "authors",
+        "dates",
+        "description"
+    ],
+    "properties": {
+        "version": {
+            "type": "string",
+            "description": "The version of the PEAR schema this entity object is compliant to",
+            "enum": [
+                "1.0-alpha"
+            ]
+        },
+        "name": {
+            "type": "object",
+            "description": "The identification labels of the entity object within the PEAR dataset",
+            "required": [
+                "reference",
+                "label"
+            ],
+            "properties": {
+                "reference": {
+                    "type": "string",
+                    "title": "Numeric reference",
+                    "description": "This is the concatenated value of the entity categorisation numbers"
+                },
+                "label": {
+                    "type": "string",
+                    "title": "Textual label",
+                    "description": "This is the text based unique reference of the entity e.g O'Higgins & Brennan 2025a",
+                    "minLength": 6
+                }
+            },
+            "additionalProperties": false
+        },
+        "authors": {
+            "type": "array",
+            "description": "The list of authors involved with creating the PEAR entity in standard scientific paper order",
+            "items": {
+                "type": "object",
+                "title": "Author object",
+                "description": "Details of the author involved with the PEAR entity",
+                "required": [
+                    "first_names",
+                    "last_name"
+                ],
+                "properties": {
+                    "first_names": {
+                        "type": "string",
+                        "title": "Author first names",
+                        "description": "First author names as would appear on a scientific paper i.e Daniel S.",
+                        "minLength": 1
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "title": "Author last name",
+                        "description": "The last name of an author i.e Brennan",
+                        "minLength": 1
+                    },
+                    "institution": {
+                        "type": "string",
+                        "title": "Name of the institution",
+                        "description": "The name of the institution associated with the Author i.e University of Sheffield",
+                        "minLength": 1
+                    },
+                    "email": {
+                        "type": "string",
+                        "title": "Email address",
+                        "description": "Correspondant email address for the author",
+                        "minLength": 5
+                    },
+                    "orcid": {
+                        "type": "string",
+                        "title": "ORC ID",
+                        "description": "The ORCID of the author",
+                        "minLength": 19,
+                        "maxLength": 19
+                    }
+                },
+                "additionalProperties": false
+            },
+            "minItems": 1
+        },
+        "dates": {
+            "type": "object",
+            "description": "The date markers for key timepoints in the lifespan of the PEAR entity",
+            "required": [
+                "published"
+            ],
+            "properties": {
+                "published": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/date"
+                        },
+                        {
+                            "title": "Published date",
+                            "description": "The date the entity was first published in PEAR"
+                        }
+                    ]
+                },
+                "modified": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/date"
+                        },
+                        {
+                            "title": "Modified date",
+                            "description": "The date the entity was last modified in PEAR"
+                        }
+                    ]
+                },
+                "expired": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/date"
+                        },
+                        {
+                            "title": "Published date",
+                            "description": "The date the entity was marked as expired in PEAR"
+                        }
+                    ]
+                }
+            },
+            "additionalProperties": false
+        },
+        "lineage": {
+            "type": "object",
+            "description": "References to the ancestors of this PEAR entity",
+            "properties": {
+                "supersedes": {
+                    "type": "string",
+                    "title": "Superseded entity",
+                    "description": "The numerical reference of the PEAR entity that this PEAR entity replaces"
+                },
+                "precedes": {
+                    "type": "string",
+                    "title": "Preceded entity",
+                    "description": "The numerical reference of the PEAR entity that replaces this PEAR entity"
+                }
+            },
+            "minProperties": 1,
+            "additionalProperties": false
+        },
+        "description": {
+            "type": "object",
+            "description": "Description of the PEAR entity",
+            "required": [
+                "summary",
+                "detail"
+            ],
+            "properties": {
+                "summary": {
+                    "type": "string",
+                    "title": "Summary description",
+                    "description": "The short description (less than 300 characters) of the PEAR entity",
+                    "minLength": 1,
+                    "maxLength": 300
+                },
+                "detail": {
+                    "type": "string",
+                    "title": "Detail description",
+                    "description": "The long description of the PEAR entity",
+                    "minLength": 1
+                }
+            },
+            "additionalProperties": false
+        }
+    }
+}
