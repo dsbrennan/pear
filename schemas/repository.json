@@ -1,0 +1,100 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "https://dsbrennan.github.io/pear/schemas/repository.json",
+    "type": "object",
+    "title": "PEAR Schema: Repository object",
+    "description": "The JSON schema to define a PEAR repository",
+    "required": [
+        "version",
+        "dates"
+    ],
+    "properties": {
+        "version": {
+            "type": "object",
+            "title": "Version",
+            "description": "Version information of the repository",
+            "required": [
+                "release",
+                "schema"
+            ],
+            "properties": {
+                "release": {
+                    "type": "string",
+                    "title": "Release version",
+                    "description": "Release version of the repository",
+                    "minLength": 1
+                },
+                "schema": {
+                    "type": "string",
+                    "title": "Schema version",
+                    "description": "Version of the PEAR schema the repository is compliant to",
+                    "enum": [
+                        "1.0-alpha"
+                    ]
+                }
+            },
+            "additionalProperties": false
+        },
+        "dates": {
+            "type": "object",
+            "title": "Dates",
+            "description": "Date information of the repository",
+            "required": [
+                "release"
+            ],
+            "properties": {
+                "release": {
+                    "allOf": [
+                        {
+                            "$ref": "https://dsbrennan.github.io/pear/schemas/entity.json#/definitions/date"
+                        },
+                        {
+                            "title": "Release date",
+                            "description": "The date of release for the current release version"
+                        }
+                    ]
+                },
+                "modified": {
+                    "allOf": [
+                        {
+                            "$ref": "https://dsbrennan.github.io/pear/schemas/entity.json#/definitions/date"
+                        },
+                        {
+                            "title": "Modified date",
+                            "description": "The date the last update happened to the current release version"
+                        }
+                    ]
+                }
+            },
+            "additionalProperties": false
+        },
+        "datasets": {
+            "type": "array",
+            "title": "Datasets",
+            "description": "The registered active datasets within the repository",
+            "items": {
+                "allOf": [
+                    {
+                        "$ref": "https://dsbrennan.github.io/pear/schemas/link.json"
+                    },
+                    {
+                        "properties": {
+                            "name": {
+                                "properties": {
+                                    "reference": {
+                                        "$ref": "https://dsbrennan.github.io/pear/schemas/dataset.json#/definitions/reference"
+                                    }
+                                }
+                            },
+                            "link": {
+                                "pattern": "^(/)?datasets/[1-9][0-9]*\\.(.)+/([1-9][0-9]*\\.){2}(.)+/([1-9][0-9]*\\.){3}(.)+/dataset.json$"
+                            }
+                        }
+                    }
+                ]
+            },
+            "minItems": 1
+        }
+    },
+    "additionalProperties": false
+}
