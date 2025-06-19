@@ -1,0 +1,83 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "https://dsbrennan.github.io/pear/schemas/software.json",
+    "type": "object",
+    "title": "PEAR Schema: Software object",
+    "description": "The JSON schema to define a Software object within the PEAR repository",
+    "required": [
+        "name",
+        "version",
+        "source",
+        "method",
+        "outputs"
+    ],
+    "properties": {
+        "name": {
+            "type": "string",
+            "title": "Software name",
+            "description": "The name of the software used to generate the data enclosed in the PEAR entity",
+            "minLength": 1
+        },
+        "version": {
+            "type": "string",
+            "title": "Software version",
+            "description": "The version number or identifier of the software used",
+            "minLength": 1
+        },
+        "source": {
+            "type": "string",
+            "title": "Software Source",
+            "description": "Link to the software source. Ideally this will be the repository of the source code or release; however, if this is not possible, a link to the software's web page",
+            "minLength": 10
+        },
+        "options": {
+            "type": "object",
+            "title": "Software options",
+            "description": "The options that were passed into the software to change the default behaviour of the software",
+            "additionalProperties": {
+                "type": "object",
+                "title": "Software option",
+                "description": "Details on the option",
+                "required": [
+                    "description",
+                    "value"
+                ],
+                "properties": {
+                    "description": {
+                        "type": "string",
+                        "title": "Option description",
+                        "description": "A description of the option and why it has been changed from the default value",
+                        "minLength": 1
+                    },
+                    "value": {
+                        "title": "Option value",
+                        "description": "The used value of the option",
+                        "not": {
+                            "type": "null"
+                        }
+                    }
+                },
+                "additionalProperties": false
+            },
+            "minProperties": 1
+        },
+        "method": {
+            "type": "string",
+            "title": "Software method",
+            "description": "Detailed instructions on how to replicate the associated entities data using the software",
+            "minLength": 1
+        },
+        "outputs": {
+            "type": "array",
+            "title": "Software outputs",
+            "description": "A list of data types outputted by the software",
+            "items": {
+                "type": "string",
+                "title": "Data type",
+                "description": "The type of PBSHM or none PBSHM data generated"
+            },
+            "minItems": 1
+        }
+    },
+    "additionalProperties": false
+}
