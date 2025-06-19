@@ -8,11 +8,16 @@ from referencing.jsonschema import DRAFT4
 
 # ensure three parameters
 if len(sys.argv) != 3:
-    print(f"The validator needs two arguments: mode (dataset/scenario), filename")
+    print(f"The validator needs two arguments: mode (repository/dataset/state/scenario), filename")
     sys.exit()
 
 # ensure mode valid
-if sys.argv[1] != "dataset" and sys.argv[1] != "scenario":
+if (
+    sys.argv[1] != "repository"
+    and sys.argv[1] != "dataset"
+    and sys.argv[1] != "state"
+    and sys.argv[1] != "scenario"
+):
     print(f"Invalid mode: {sys.argv[1]}")
     sys.exit()
 
@@ -28,29 +33,67 @@ else:
 
 # create registry of referenced files
 def registry_with_files(files: list[str]) -> Registry:
+    base_uri = "https://dsbrennan.github.io/pear/schemas/"
     registry = Registry()
     for file in files:
-        with open(os.path.join("schema", file)) as fs:
+        local_file = file.removeprefix(base_uri) if file.startswith(base_uri) else file
+        with open(os.path.join("schemas", local_file)) as fs:
             schema = DRAFT4.create_resource(json.loads(fs.read()))
             registry = registry.with_resource(uri=file, resource=schema)
     return registry
 
+# create a schema validator
+def create_schema_validator(schema: str, register_files: list[str]) -> Draft4Validator:
+    # process validation
+    print(f"Processing {schema} validation for file {sys.argv[2]}")
+    with open(os.path.join("schemas", schema)) as fs:
+        schema = json.loads(fs.read())
+        return Draft4Validator(
+            schema=schema,
+            registry=registry_with_files(register_files),
+        )
+
 
 validator = None
-if sys.argv[1] == "dataset":
-    # process dataset validation
-    print(f"Processing dataset validation for file {sys.argv[2]}")
-    with open(os.path.join("schema", "dataset.json")) as fs:
-        schema = json.loads(fs.read())
-        validator = Draft4Validator(schema=schema)
+if sys.argv[1] == "repository":
+    validator = create_schema_validator(
+        "repository.json",
+        [
+            "https://dsbrennan.github.io/pear/schemas/entity.json",
+            "https://dsbrennan.github.io/pear/schemas/link.json",
+            "https://dsbrennan.github.io/pear/schemas/dataset.json",
+        ],
+    )
+
+elif sys.argv[1] == "dataset":
+    validator = create_schema_validator(
+        "dataset.json",
+        [
+            "https://dsbrennan.github.io/pear/schemas/entity.json",
+            "https://dsbrennan.github.io/pear/schemas/link.json",
+            "https://dsbrennan.github.io/pear/schemas/state.json",
+        ],
+    )
+elif sys.argv[1] == "state":
+    validator = create_schema_validator(
+        "state.json",
+        [
+            "https://dsbrennan.github.io/pear/schemas/entity.json",
+            "https://dsbrennan.github.io/pear/schemas/link.json",
+            "https://dsbrennan.github.io/pear/schemas/software.json",
+            "https://dsbrennan.github.io/pear/schemas/file.json",
+            "https://dsbrennan.github.io/pear/schemas/scenario.json",
+        ],
+    )
 elif sys.argv[1] == "scenario":
-    # process scenario validation
-    print(f"Processing scenario validation for file {sys.argv[2]}")
-    with open(os.path.join("schema", "scenario.json")) as fs:
-        schema = json.loads(fs.read())
-        validator = Draft4Validator(
-            schema=schema, registry=registry_with_files(["dataset.json", "scenario.json"])
-        )
+    validator = create_schema_validator(
+        "scenario.json",
+        [
+            "https://dsbrennan.github.io/pear/schemas/entity.json",
+            "https://dsbrennan.github.io/pear/schemas/software.json",
+            "https://dsbrennan.github.io/pear/schemas/file.json",
+        ],
+    )
 
 # validate schema
 if validator != None:
