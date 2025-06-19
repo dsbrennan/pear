@@ -1,0 +1,215 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "https://dsbrennan.github.io/pear/schemas/state.json",
+    "type": "object",
+    "title": "PEAR Schema: State object",
+    "description": "The JSON schema to define a State object within the PEAR repository",
+    "definitions": {
+        "reference": {
+            "pattern": "^([1-9][0-9]*\\.){3}([0-9]|[1-9][0-9]+)\\.$"
+        }
+    },
+    "allOf": [
+        {
+            "$ref": "https://dsbrennan.github.io/pear/schemas/entity.json"
+        },
+        {
+            "required": [
+                "files"
+            ],
+            "properties": {
+                "version": {
+                    "title": "Schema version of the PEAR state object"
+                },
+                "name": {
+                    "title": "Name of the PEAR state",
+                    "properties": {
+                        "reference": {
+                            "$ref": "#/definitions/reference"
+                        }
+                    }
+                },
+                "authors": {
+                    "title": "Authors of the PEAR state"
+                },
+                "dates": {
+                    "title": "Dates of the PEAR state"
+                },
+                "lineage": {
+                    "title": "Lineage of the PEAR state",
+                    "properties": {
+                        "supersedes": {
+                            "$ref": "#/definitions/reference"
+                        },
+                        "precedes": {
+                            "$ref": "#/definitions/reference"
+                        }
+                    }
+                },
+                "description": {
+                    "title": "Descriptions of the PEAR state"
+                },
+                "base": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/reference"
+                        },
+                        {
+                            "type": "string",
+                            "title": "Base state",
+                            "description": "The numerical reference to the base state that this state has been based upon"
+                        }
+                    ]
+                },
+                "software": {
+                    "type": "array",
+                    "title": "List of software",
+                    "description": "List of software used to generate the state's form data",
+                    "items": {
+                        "allOf": [
+                            {
+                                "$ref": "https://dsbrennan.github.io/pear/schemas/software.json"
+                            },
+                            {
+                                "properties": {
+                                    "outputs": {
+                                        "items": {
+                                            "enum": [
+                                                "structuralInformationModel",
+                                                "irreducibleElementModel",
+                                                "noneSchema"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "minItems": 1
+                },
+                "files": {
+                    "type": "array",
+                    "title": "List of files",
+                    "description": "The files associated with this state",
+                    "items": [
+                        {
+                            "allOf": [
+                                {
+                                    "$ref": "https://dsbrennan.github.io/pear/schemas/file.json"
+                                },
+                                {
+                                    "required": [
+                                        "schema"
+                                    ],
+                                    "properties": {
+                                        "type": {
+                                            "enum": [
+                                                "structuralInformationModel"
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "allOf": [
+                                {
+                                    "$ref": "https://dsbrennan.github.io/pear/schemas/file.json"
+                                },
+                                {
+                                    "required": [
+                                        "schema"
+                                    ],
+                                    "properties": {
+                                        "type": {
+                                            "enum": [
+                                                "irreducibleElementModel"
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "additionalItems": {
+                        "allOf": [
+                            {
+                                "$ref": "https://dsbrennan.github.io/pear/schemas/file.json"
+                            },
+                            {
+                                "properties": {
+                                    "type": {
+                                        "enum": [
+                                            "other"
+                                        ]
+                                    }
+                                },
+                                "dependencies": {
+                                    "schema": {
+                                        "properties": {
+                                            "type": {
+                                                "not": {
+                                                    "enum": [
+                                                        "other"
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "minItems": 2
+                },
+                "scenarios": {
+                    "type": "array",
+                    "title": "List of state scenarios",
+                    "description": "The registered active scenarios in the state",
+                    "items": {
+                        "allOf": [
+                            {
+                                "$ref": "https://dsbrennan.github.io/pear/schemas/link.json"
+                            },
+                            {
+                                "properties": {
+                                    "name": {
+                                        "properties": {
+                                            "reference": {
+                                                "$ref": "https://dsbrennan.github.io/pear/schemas/scenario.json#/definitions/reference"
+                                            }
+                                        }
+                                    },
+                                    "link": {
+                                        "oneOf": [
+                                            {
+                                                "pattern": "^([1-9][0-9]*\\.){3}([0-9]|[1-9][0-9]+)\\.[1-9][0-9]*\\.(.)+/scenario.json$"
+                                            },
+                                            {
+                                                "pattern": "^/datasets/[1-9][0-9]*\\.(.)+/([1-9][0-9]*\\.){2}(.)+/([1-9][0-9]*\\.){3}(.)+/([1-9][0-9]*\\.){3}([0-9]|[1-9][0-9]+)\\.state-([0-9]|[1-9][0-9]+)/([1-9][0-9]*\\.){3}([0-9]|[1-9][0-9]+)\\.[1-9][0-9]*\\.(.)+/scenario.json$"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "dependencies": {
+                "base": {
+                    "properties": {
+                        "name": {
+                            "properties": {
+                                "reference": {
+                                    "pattern": "^([1-9][0-9]*\\.){4}$"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "additionalProperties": false
+        }
+    ]
+}
