@@ -1,0 +1,44 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "https://dsbrennan.github.io/pear/schemas/link.json",
+    "type": "object",
+    "title": "PEAR Schema: Link object",
+    "description": "The JSON schema to define a Link to a Entity within the PEAR repository",
+    "required": [
+        "name",
+        "description",
+        "link"
+    ],
+    "properties": {
+        "name": {
+            "allOf": [
+                {
+                    "$ref": "https://dsbrennan.github.io/pear/schemas/entity.json#/properties/name"
+                },
+                {
+                    "title": "Name of the linked entity"
+                }
+            ]
+        },
+        "description": {
+            "type": "object",
+            "title": "Description of the linked entity",
+            "description": "Description of the PEAR object being linked to",
+            "required": [
+                "summary"
+            ],
+            "properties": {
+                "summary": {
+                    "$ref": "https://dsbrennan.github.io/pear/schemas/entity.json#/properties/description/properties/summary"
+                }
+            },
+            "additionalProperties": false
+        },
+        "link": {
+            "type": "string",
+            "title": "Link to the linked entity",
+            "description": "The link to the entities JSON file"
+        }
+    },
+    "additionalProperties": false
+}
